@@ -1,0 +1,168 @@
+local tbl = document:getBlocks():getTable(0)
+
+--Выделенный фрагмент
+local rng=EditorAPI.getSelection()
+
+--Координаты выделенного фрагмента (ячейки)
+local r1= rng:getBeginRow()
+local c1= rng:getBeginColumn()
+
+--Задаем изначальное смещение относительно начальной ячейки
+local ru=0
+local rd=0
+local cl=0
+local cr=0
+
+-- Проверяем значения соседних ячеек
+
+local i=c1-1
+
+-- Проверяем левые ячейки
+if c1~=0 then
+
+	--Значение ячейки
+	local cell = tbl:getCell(DocumentAPI.CellPosition(r1, i))
+	local val = cell:getFormattedValue()
+
+	--Проверка на то, является ли введенные данные числом
+	while type(tonumber(val)) == 'number' and i>=0 do
+	--Значение ячейки
+	cell = tbl:getCell(DocumentAPI.CellPosition(r1, i))
+	val = cell:getFormattedValue()
+	
+	cl=cl+1
+	i=i-1
+
+	end
+end
+
+
+i=c1+1
+-- Проверяем правые ячейки
+
+if i< tbl:getColumnsCount() then
+	
+	--Значение ячейки
+	cell = tbl:getCell(DocumentAPI.CellPosition(r1, i))
+	val = cell:getFormattedValue()
+	
+	--Проверка на то, является ли введенные данные числом
+	while type(tonumber(val)) == 'number' and i<= tbl:getColumnsCount() do
+	--Значение ячейки
+	cell = tbl:getCell(DocumentAPI.CellPosition(r1, i))
+	val = cell:getFormattedValue()
+	
+	cr=cr+1
+	i=i+1
+
+	end
+end
+
+
+i=r1-1
+--Проверяем верхние ячейки
+if r1~=0 then
+	
+	--Значение ячейки
+	cell = tbl:getCell(DocumentAPI.CellPosition(i, c1))
+	val = cell:getFormattedValue()
+
+	--Проверка на то, является ли введенные данные числом
+	while type(tonumber(val)) == 'number' and i>=0 do
+	--Значение ячейки
+	cell = tbl:getCell(DocumentAPI.CellPosition(i, c1))
+	val = cell:getFormattedValue()
+	
+	ru=ru+1
+	i=i-1
+
+	end
+end
+
+
+i=r1+1
+-- Проверяем нижние ячейки
+
+	
+	if i< tbl:getRowsCount() then
+	--Значение ячейки
+	cell = tbl:getCell(DocumentAPI.CellPosition(i, c1))
+	val = cell:getFormattedValue()
+	
+	--Проверка на то, является ли введенные данные числом
+	while type(tonumber(val)) == 'number' and i<= tbl:getRowsCount() do
+	--Значение ячейки
+	cell = tbl:getCell(DocumentAPI.CellPosition(i, c1))
+	val = cell:getFormattedValue()
+	
+	rd=rd+1
+	i=i+1
+
+	end
+end
+
+
+
+--Преобразовываем номера столбцов в буквы
+local b={'A' , 'B' , 'C' , 'D' , 'E' , 'F' , 'G' , 'H' , 'I' , 'J' , 'K' , 'L' , 'M' , 'N' , 'O', 'P' , 'Q' , 'R' , 'S' , 'T' , 'U' , 'V' , 'W' , 'X' , 'Y' , 'Z'}
+
+local c2=''
+local c3=''
+local t=0
+
+local numc1=0
+local numc2=0
+local r2=0
+local r3=0
+
+-- Выбираем для суммирования ту строку/столбец, по которой будем сумировать
+if cl>=cr and cl>=ru and cl>=rd then
+numc1=c1-cl+2
+numc2=c1
+
+r2=r1+1
+r3=r1+1
+end
+
+if cr>cl and cr>ru and cr>rd then
+numc1=c1+2
+numc2=c1+cr
+
+r2=r1+1
+r3=r1+1
+end
+
+if ru>cl and ru>=cr and ru>=rd then
+r2=r1-ru+2
+r3=r1
+
+numc1=c1+1
+numc2=c1+1
+end
+
+if rd>cl and rd>=cr and rd>ru then
+r2=r1+2
+r3=r1+rd
+
+numc1=c1+1
+numc2=c1+1
+end
+
+--Преобразовываем номер столбца в букву
+if numc1 < 27 then
+    c2 = b[numc1]
+else
+    t = ((numc1) / 26)-((numc1) / 26)%1
+    c2 = b[t] .. b[numc1 - t * 26]
+end
+
+if numc2 < 27 then
+    c3 = b[numc2]
+else
+    t = ((numc2) / 26)-((numc2) / 26)%1
+    c3 = b[t] .. b[numc2 - t * 26]
+end
+
+--Записываем результат в ячейку
+local pos = tbl:getCell(DocumentAPI.CellPosition(r1, c1))
+pos:setFormula('=СУММ('..c2..r2..':'..c3..r3..')')
