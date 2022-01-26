@@ -1,0 +1,120 @@
+local tbl = document:getBlocks():getTable(0)
+
+--Выделенный фрагмент
+local rng=EditorAPI.getSelection()
+
+--Координаты выделенного фрагмента (ячейки)
+local r1= rng:getBeginRow()
+local c1= rng:getBeginColumn()
+
+--Значение выделенной ячейки
+local cell = tbl:getCell(DocumentAPI.CellPosition(r1, c1))
+local val = cell:getFormattedValue()
+
+--Проверка на то, является ли введенные данные числом
+if type(tonumber(val)) ~= 'number' then 
+do return end
+end 
+
+--Задаем массивы
+local s= {
+	{'триллион', 'триллиона', 'триллионов'},
+    {'миллиард', 'миллиарда', 'миллиардов'},
+    {'миллион', 'миллиона', 'миллионов'},
+    {'тысяча', 'тысячи', 'тысяч'}, 
+    {'', '', ''}
+    }
+local c={0,0,0,0,0}
+
+--Делим число на разряды
+c[1]=val / 1000000000000-((val / 1000000000000)%1)
+c[2]=(val % 1000000000000) / 1000000000-(((val % 1000000000000) / 1000000000)%1)
+c[3]=(val % 1000000000) / 1000000-(((val % 1000000000) / 1000000)%1)
+c[4]=(val % 1000000) / 1000-(((val % 1000000) / 1000)%1)
+c[5]=val % 1000
+
+
+local i=0
+local st=''
+
+--Обработка числа
+for i = 1, 5 do
+
+if c[i]~=0 then
+  if c[i] / 100-((c[i] / 100)%1)~=0 then
+  
+  	if c[i] / 100-((c[i] / 100)%1) == 1 then st=st..'сто' end
+  	if c[i] / 100-((c[i] / 100)%1) == 2 then st=st..'двести' end
+  	if c[i] / 100-((c[i] / 100)%1) == 3 then st=st..'триста' end
+  	if c[i] / 100-((c[i] / 100)%1) == 4 then st=st..'четыреста' end
+  	if c[i] / 100-((c[i] / 100)%1) == 5 then st=st..'пятьсот' end
+  	if c[i] / 100-((c[i] / 100)%1) == 6 then st=st..'шестьсот' end
+  	if c[i] / 100-((c[i] / 100)%1) == 7 then st=st..'семьсот' end
+  	if c[i] / 100-((c[i] / 100)%1) == 8 then st=st..'восемьсот' end
+  	if c[i] / 100-((c[i] / 100)%1) == 9 then st=st..'девятьсот' end
+    
+  end	
+  			
+  		if (c[i] % 100) / 10-(((c[i] % 100) / 10)%1)~=1 then
+    
+    		if (c[i] % 100) / 10-(((c[i] % 100) / 10)%1) == 2 then st=st..' двадцать' end
+    		if (c[i] % 100) / 10-(((c[i] % 100) / 10)%1) == 3 then st=st..' тридцать' end
+    		if (c[i] % 100) / 10-(((c[i] % 100) / 10)%1) == 4 then st=st..' сорок' end
+    		if (c[i] % 100) / 10-(((c[i] % 100) / 10)%1) == 5 then st=st..' пятьдесят' end
+    		if (c[i] % 100) / 10-(((c[i] % 100) / 10)%1) == 6 then st=st..' шестьдесят' end
+    		if (c[i] % 100) / 10-(((c[i] % 100) / 10)%1) == 7 then st=st..' семьдесят' end
+    		if (c[i] % 100) / 10-(((c[i] % 100) / 10)%1) == 8 then st=st..' восемьдесят' end
+    		if (c[i] % 100) / 10-(((c[i] % 100) / 10)%1) == 9 then st=st..' девяносто' end
+    
+           		       		
+       		if c[i] % 10 == 1 and i==4 then st=st..' одна' end
+   			if c[i] % 10 == 2 and i==4 then st=st..' две' end
+   			if c[i] % 10 == 1 and i~=4 then st=st..' один' end
+   			if c[i] % 10 == 2 and i~=4 then st=st..' два' end
+   			if c[i] % 10 == 3 then st=st..' три' end
+    		if c[i] % 10 == 4 then st=st..' четыре' end
+    		if c[i] % 10 == 5 then st=st..' пять' end
+    		if c[i] % 10 == 6 then st=st..' шесть' end
+    		if c[i] % 10 == 7 then st=st..' семь' end
+    		if c[i] % 10 == 8 then st=st..' восемь' end
+    		if c[i] % 10 == 9 then st=st..' девять' end
+
+        
+        else
+  	
+  			if c[i] % 100 == 10 then st=st..' десять' end
+  			if c[i] % 100 == 11 then st=st..' одиннадцать' end
+  			if c[i] % 100 == 12 then st=st..' двенадцать' end
+  			if c[i] % 100 == 13 then st=st..' тринадцать' end
+  			if c[i] % 100 == 14 then st=st..' четырнадцать' end
+  			if c[i] % 100 == 15 then st=st..' пятнадцать' end
+  			if c[i] % 100 == 16 then st=st..' шестнадцать' end
+  			if c[i] % 100 == 17 then st=st..' семнадцать' end
+  			if c[i] % 100 == 18 then st=st..' восемнадцать' end
+  			if c[i] % 100 == 19 then st=st..' девятнадцать' end
+        
+        end
+   			
+   	if (c[i] % 100>=10) and (c[i] % 100<=19) then st=st..' '..s[i][3]..' '
+   	else
+   	
+   	if c[i] % 10 == 1 then st=st..' '..s[i][1]..' ' end
+   	if c[i] % 10 >= 2 and c[i] % 10 <= 4  then st=st..' '..s[i][2]..' ' end
+   	if (c[i] % 10 >= 5 and c[i] % 10 <= 9) or c[i] % 10==0 then st=st..' '..s[i][3]..' ' end
+   	
+   	end
+
+end 
+
+end
+
+--На случай если в строке просто ноль
+if st=='' and val=='0' then st='ноль' end
+
+--Убираем задвоение пробелов (в отдельных случаях могут встретиться)
+st=string.gsub (st, '  ', ' ')
+
+
+--Записываем результат в соседнюю ячейку
+local pos = tbl:getCell(DocumentAPI.CellPosition(r1, c1+1))
+pos:setFormattedValue(st)
